@@ -1,9 +1,9 @@
 /**
  * @see https://umijs.org/docs/max/access#access
  * */
-export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
-  const { currentUser } = initialState ?? {};
+export default function access(initialState: { loginUser?: API.LoginUserVO } | undefined) {
+  const { loginUser } = initialState ?? {};
   return {
-    canAdmin: currentUser && currentUser.access === 'admin',
+    canAdmin: loginUser && loginUser.userRole === 'admin',
   };
 }
