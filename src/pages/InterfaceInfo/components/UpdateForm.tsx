@@ -24,12 +24,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       onCancel={() => {
         props.onCancel();
       }}
+      footer={null}
     >
       <ProTable
         type="form"
         formRef={formRef}
         columns={columns}
-        onSubmit={async (value) => {
+        onSubmit={(value) => {
+          value.id = values.id;
           props.onSubmit(value);
         }}
       />

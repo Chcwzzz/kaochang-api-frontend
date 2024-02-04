@@ -1,6 +1,6 @@
-import { removeRule } from '@/services/ant-design-pro/api';
 import {
   addInterfaceInfoUsingPost,
+  deleteInterfaceInfoUsingPost,
   listInterfaceInfoByPageUsingPost,
   updateInterfaceInfoUsingPost,
 } from '@/services/kaochang-api-backend/interfaceInfoController';
@@ -13,7 +13,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, Drawer, message } from 'antd';
+import { Button, Drawer, Popconfirm, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import CreateModal from './components/CreateModal';
 import UpdateForm from './components/UpdateForm';
@@ -34,7 +34,7 @@ const handleAdd = async (fields: API.InterfaceInfoAddRequest) => {
     return true;
   } catch (error) {
     hide();
-    message.error(error.message + '，请重试');
+    message.error('操作失败：' + error.message);
     return false;
   }
 };
@@ -56,7 +56,7 @@ const handleUpdate = async (fields: API.InterfaceInfoUpdateRequest) => {
     return true;
   } catch (error) {
     hide();
-    message.error(error.message + '，请重试');
+    message.error('操作失败：' + error.message);
     return false;
   }
 };
@@ -67,19 +67,19 @@ const handleUpdate = async (fields: API.InterfaceInfoUpdateRequest) => {
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+const handleRemove = async (record: API.DeleteRequest) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+  if (!record) return true;
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
+    await deleteInterfaceInfoUsingPost({
+      ...record,
     });
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('删除成功');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('操作失败：' + error.message);
     return false;
   }
 };
@@ -214,15 +214,20 @@ const TableList: React.FC = () => {
         >
           修改
         </a>,
-        <Button
-          danger
-          key="remove"
-          onClick={() => {
-            handleRemove(record);
+        <Popconfirm
+          title="删除"
+          description="确定要删除吗？"
+          onConfirm={async () => {
+            const success = await handleRemove(record);
+            if (success) {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
           }}
         >
-          删除
-        </Button>,
+          <Button danger>删除</Button>
+        </Popconfirm>,
       ],
     },
   ];
@@ -311,6 +316,9 @@ const TableList: React.FC = () => {
           const success = await handleAdd(value);
           if (success) {
             handleCreateModalOpen(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }
         }}
         onCancel={() => {

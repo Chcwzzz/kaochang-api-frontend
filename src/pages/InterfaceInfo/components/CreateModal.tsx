@@ -1,7 +1,7 @@
-import { ProColumns, ProTable } from '@ant-design/pro-components';
+import { ProColumns, ProFormInstance, ProTable } from '@ant-design/pro-components';
 import '@umijs/max';
 import { Modal } from 'antd';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 export type Props = {
   columns: ProColumns<API.InterfaceInfo>[];
   onCancel: () => void;
@@ -11,14 +11,22 @@ export type Props = {
 
 const CreateModal: React.FC<Props> = (props) => {
   const { columns, createModalOpen } = props;
+  const formRef = useRef<ProFormInstance>();
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.resetFields();
+    }
+  });
   return (
     <Modal
       open={createModalOpen}
       onCancel={() => {
         props.onCancel();
       }}
+      footer={null}
     >
       <ProTable
+        formRef={formRef}
         type="form"
         columns={columns}
         onSubmit={async (value) => {
