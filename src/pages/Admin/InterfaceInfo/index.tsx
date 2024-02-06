@@ -1,6 +1,8 @@
 import {
   addInterfaceInfoUsingPost,
   deleteInterfaceInfoUsingPost,
+  interfaceOfflineUsingPost,
+  interfaceOnlineUsingPost,
   listInterfaceInfoByPageUsingPost,
   updateInterfaceInfoUsingPost,
 } from '@/services/kaochang-api-backend/interfaceInfoController';
@@ -53,6 +55,52 @@ const handleUpdate = async (fields: API.InterfaceInfoUpdateRequest) => {
     });
     hide();
     message.success('修改成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('操作失败：' + error.message);
+    return false;
+  }
+};
+
+/**
+ *  Offline node
+ * @zh-CN 发布接口
+ *
+ * @param selectedRows
+ */
+const handleOnline = async (record: API.IdRequest) => {
+  const hide = message.loading('正在发布');
+  if (!record) return true;
+  try {
+    await interfaceOnlineUsingPost({
+      ...record,
+    });
+    hide();
+    message.success('发布成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('操作失败：' + error.message);
+    return false;
+  }
+};
+
+/**
+ *  Offline node
+ * @zh-CN 下线接口
+ *
+ * @param selectedRows
+ */
+const handleOffline = async (record: API.IdRequest) => {
+  const hide = message.loading('正在下线');
+  if (!record) return true;
+  try {
+    await interfaceOfflineUsingPost({
+      ...record,
+    });
+    hide();
+    message.success('下线成功');
     return true;
   } catch (error) {
     hide();
@@ -181,6 +229,7 @@ const TableList: React.FC = () => {
           },
         ],
       },
+      hideInForm: true,
     },
     {
       title: '创建人',
@@ -212,8 +261,43 @@ const TableList: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          修改
+          <Button type="primary" ghost>
+            修改
+          </Button>
         </a>,
+        record.status === 0 ? (
+          <a
+            key="config"
+            onClick={async () => {
+              const success = await handleOnline(record);
+              if (success) {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+          >
+            <Button type="primary" ghost>
+              发布
+            </Button>
+          </a>
+        ) : (
+          <a
+            key="config"
+            onClick={async () => {
+              const success = await handleOffline(record);
+              if (success) {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+          >
+            <Button type="primary" ghost>
+              下线
+            </Button>
+          </a>
+        ),
         <Popconfirm
           title="删除"
           description="确定要删除吗？"

@@ -4,11 +4,9 @@
 // API 唯一标识：
 import * as fileController from './fileController';
 import * as interfaceInfoController from './interfaceInfoController';
-import * as postController from './postController';
 import * as userController from './userController';
 export default {
   fileController,
   interfaceInfoController,
-  postController,
   userController,
 };
