@@ -3,16 +3,16 @@ import { NewRequestColumn, NewResponseColumn } from '@/components/ParamsTable/co
 import { ProColumns, ProFormColumnsType } from '@ant-design/pro-components';
 
 export const defaultNewRequestColumn: NewRequestColumn = {
-  fieldName: '',
+  paramName: '',
   required: '是',
   type: 'string',
-  desc: '',
+  description: '',
 };
 
 export const defaultNewResponseColumn: NewResponseColumn = {
-  fieldName: '',
+  paramName: '',
   type: 'string',
-  desc: '',
+  description: '',
 };
 
 export const requestParam: ProColumns[] = [
@@ -116,7 +116,7 @@ export const responseParam: ProColumns[] = [
   },
 ];
 
-export const InterfaceInfoModalFormColumns: ProFormColumnsType<API.InterfaceInfo>[] = [
+export const InterfaceInfoModalFormColumns: ProFormColumnsType<API.InterfaceInfoAddRequest>[] = [
   {
     dataIndex: 'id',
     valueType: 'index',
@@ -128,7 +128,7 @@ export const InterfaceInfoModalFormColumns: ProFormColumnsType<API.InterfaceInfo
     dataIndex: 'interfaceName',
     tooltip: '接口名称',
     valueType: 'text',
-    key: 'name',
+    key: 'interfaceName',
     formItemProps: {
       rules: [
         {
@@ -191,7 +191,7 @@ export const InterfaceInfoModalFormColumns: ProFormColumnsType<API.InterfaceInfo
   {
     title: '请求示例',
     key: 'requestExample',
-    dataIndex: 'description',
+    dataIndex: 'requestExample',
     width: 'lg',
     valueType: 'text',
     colProps: {

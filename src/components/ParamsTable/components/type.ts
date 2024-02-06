@@ -1,11 +1,11 @@
 export type NewRequestColumn = {
-  fieldName: string;
+  paramName: string;
   required: '是' | '否';
   type: 'int' | 'string' | 'boolean' | 'double' | 'long' | 'object';
-  desc?: string;
+  description?: string;
 };
 export type NewResponseColumn = {
-  fieldName: string;
+  paramName: string;
   type: 'int' | 'string' | 'boolean' | 'double' | 'long' | 'object';
-  desc?: string;
+  description?: string;
 };

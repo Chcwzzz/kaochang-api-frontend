@@ -1,5 +1,3 @@
-import { ProColumns } from '@ant-design/pro-components';
-
 /**
  * axios代码示例
  * @param url
@@ -39,104 +37,30 @@ export const returnExample =
 
 export const responseParameters = [
   {
-    fieldName: 'code',
+    paramName: 'code',
     type: 'int',
-    desc: <>返回码</>,
+    description: <>返回码</>,
     required: '是',
   },
   {
-    fieldName: 'massage',
+    paramName: 'massage',
     type: 'string',
-    desc: '返回码描述',
+    description: '返回码描述',
     required: '是',
   },
   {
-    fieldName: 'data',
+    paramName: 'data',
     type: 'Object',
-    desc: '返回数据',
+    description: '返回数据',
     required: '是',
   },
 ];
 
 export const requestParameters = [
   {
-    fieldName: '无',
+    paramName: '无',
     type: 'string',
-    desc: '无',
+    description: '无',
     required: '否',
   },
 ];
-
-export const requestParam: ProColumns[] = [
-  {
-    title: '参数名称',
-    dataIndex: 'fieldName',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项是必填项',
-        },
-      ],
-    },
-  },
-  {
-    title: '参数值',
-    dataIndex: 'value',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项是必填项',
-        },
-      ],
-    },
-  },
-];
-
-export const DEFAULT_ADD_FIELD = {
-  fieldName: '',
-  value: '',
-};
-
-export const convertResponseParams = (params?: [API.RequestParamsField]) => {
-  if (!params || params.length <= 0) {
-    return returnExample;
-  }
-  const result = {};
-  const codeObj = {};
-  const messageObj = {};
-  params.forEach((param) => {
-    // @ts-ignore
-    const keys = param.fieldName.split('.');
-    // @ts-ignore
-    let currentObj;
-    if (keys[0] === 'code') {
-      currentObj = codeObj;
-    } else if (keys[0] === 'message') {
-      currentObj = messageObj;
-    } else {
-      currentObj = result;
-    }
-
-    keys.forEach((key, index) => {
-      if (index === keys.length - 1) {
-        if (param.type === 'int' && key === 'code') {
-          // @ts-ignore
-          currentObj[key] = 0;
-        } else {
-          // @ts-ignore
-          currentObj[key] = param.desc || '';
-        }
-      } else {
-        // @ts-ignore
-        currentObj[key] = currentObj[key] || {};
-        // @ts-ignore
-        currentObj = currentObj[key];
-      }
-    });
-  });
-  // @ts-ignore
-  const mergedResult = { code: codeObj.code, ...result, message: messageObj.message };
-  return JSON.stringify(mergedResult, null, 2);
-};

@@ -1,7 +1,7 @@
 import { Badge, Button, Card, Descriptions, Form, message, Spin, Table, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-import { statusEnum } from '@/enum/commonEnum';
+import { InterfaceRequestMethodEnum, statusEnum } from '@/enum/commonEnum';
 import { errorCode } from '@/enum/ErrorCodeEnum';
 import ApiTab from '@/pages/InterfaceInfo/components/ApiTab';
 import {
@@ -47,8 +47,6 @@ const InterfaceInfo: React.FC = () => {
   const [totalInvokes, setTotalInvokes] = useState<number>(0);
   const [javaCode, setJavaCode] = useState<any>();
   const [returnCode, setReturnCode] = useState<any>(returnExample);
-  const docUrl =
-    process.env.NODE_ENV === 'production' ? 'https://doc.qimuu.icu' : 'http://localhost:8080';
   const { initialState } = useModel('@@initialState');
   const { loginUser } = initialState || {};
   const loadedData = async () => {
@@ -170,7 +168,7 @@ const InterfaceInfo: React.FC = () => {
             {1}个
           </Descriptions.Item>
           <Descriptions.Item key={'request'} label="请求方式">
-            <Tag color={'success'}>{data?.method}</Tag>
+            <Tag color={InterfaceRequestMethodEnum[data?.method ?? 'default']}>{data?.method}</Tag>
           </Descriptions.Item>
           <Descriptions.Item key={'totalInvokes'} label="调用总次数">
             {totalInvokes}次

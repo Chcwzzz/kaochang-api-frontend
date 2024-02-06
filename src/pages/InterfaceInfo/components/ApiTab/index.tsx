@@ -16,7 +16,6 @@ export type Props = {
 };
 const ApiTab: React.FC<Props> = (props) => {
   const { requestParams, errorCodeTab, sampleCode, responseParams, returnCode } = props;
-
   return (
     <>
       <p className="highlightLine" style={{ marginTop: 15 }}>
@@ -28,10 +27,10 @@ const ApiTab: React.FC<Props> = (props) => {
         style={{ maxWidth: 800 }}
         size={'small'}
       >
-        <Column title="参数名称" dataIndex="fieldName" key="fieldName" />
+        <Column title="参数名称" dataIndex="paramName" key="paramName" />
         <Column title="必选" dataIndex="required" key="required" />
         <Column title="类型" dataIndex="type" key="type" />
-        <Column title="描述" dataIndex="desc" key="desc" />
+        <Column title="描述" dataIndex="description" key="description" />
       </Table>
       <p className="highlightLine" style={{ marginTop: 15 }}>
         响应参数说明：<a onClick={() => errorCodeTab?.()}>错误码参照</a>
@@ -44,9 +43,9 @@ const ApiTab: React.FC<Props> = (props) => {
         style={{ maxWidth: 800 }}
         size={'small'}
       >
-        <Column title="参数名称" dataIndex="fieldName" key="fieldName" />
+        <Column title="参数名称" dataIndex="paramName" key="paramName" />
         <Column title="类型" dataIndex="type" key="type" />
-        <Column title="描述" dataIndex="desc" key="desc" />
+        <Column title="描述" dataIndex="description" key="description" />
       </Table>
       {/*<p className="highlightLine" style={{marginTop: 15}}>请求示例：</p>*/}
       <a onClick={() => sampleCode?.()}>见示例代码</a>

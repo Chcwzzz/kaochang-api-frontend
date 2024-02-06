@@ -15,9 +15,9 @@ const ParamsTable: React.FC<{
     }[],
   ) => void;
 }> = ({ value, onChange, defaultNewColumn, column }) => {
-  const [dataSource, setDataSource] = useState<readonly API.RequestParamsField[]>([]);
+  const [dataSource, setDataSource] = useState<readonly API.InterfaceInfoAddRequest[]>([]);
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() => {
-    return dataSource.map((item) => item.id as React.Key);
+    return dataSource.map((item) => item.interfaceName as React.Key);
   });
   const doData = (value: any) => {
     const valueArray = [...value];
@@ -49,7 +49,7 @@ const ParamsTable: React.FC<{
           key="editable"
           onClick={() => {
             // @ts-ignore
-            action?.startEditable?.(record.id);
+            action?.startEditable?.(record.paramName);
           }}
         >
           编辑
@@ -57,7 +57,7 @@ const ParamsTable: React.FC<{
         <a
           key="delete"
           onClick={() => {
-            setDataSource(dataSource.filter((item) => item.id !== record.id));
+            setDataSource(dataSource.filter((item) => item.interfaceName !== record.interfaceName));
           }}
         >
           删除
