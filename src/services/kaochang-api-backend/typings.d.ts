@@ -92,6 +92,7 @@ declare namespace API {
     requestHeader?: string;
     responseHeader?: string;
     status?: number;
+    totalInvokes?: number;
     updateTime?: string;
     url?: string;
     userId?: number;

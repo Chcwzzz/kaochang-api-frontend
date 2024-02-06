@@ -7,15 +7,10 @@ import {
   updateInterfaceInfoUsingPost,
 } from '@/services/kaochang-api-backend/interfaceInfoController';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import {
-  FooterToolbar,
-  PageContainer,
-  ProDescriptions,
-  ProTable,
-} from '@ant-design/pro-components';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, Drawer, Popconfirm, message } from 'antd';
+import { Button, Popconfirm, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import CreateModal from './components/CreateModal';
 import UpdateForm from './components/UpdateForm';
@@ -34,7 +29,7 @@ const handleAdd = async (fields: API.InterfaceInfoAddRequest) => {
     hide();
     message.success('添加成功');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
     message.error('操作失败：' + error.message);
     return false;
@@ -56,7 +51,7 @@ const handleUpdate = async (fields: API.InterfaceInfoUpdateRequest) => {
     hide();
     message.success('修改成功');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
     message.error('操作失败：' + error.message);
     return false;
@@ -79,7 +74,7 @@ const handleOnline = async (record: API.IdRequest) => {
     hide();
     message.success('发布成功');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
     message.error('操作失败：' + error.message);
     return false;
@@ -102,7 +97,7 @@ const handleOffline = async (record: API.IdRequest) => {
     hide();
     message.success('下线成功');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
     message.error('操作失败：' + error.message);
     return false;
@@ -125,7 +120,7 @@ const handleRemove = async (record: API.DeleteRequest) => {
     hide();
     message.success('删除成功');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
     message.error('操作失败：' + error.message);
     return false;
@@ -337,7 +332,8 @@ const TableList: React.FC = () => {
         ]}
         request={async (
           params,
-          sort: Record<string, SortOrder>,
+          // sort: Record<string, SortOrder>,
+          sort: Record<string, any>,
           filter: Record<string, (string | number)[] | null>,
         ) => {
           const res: API.BaseResponsePageInterfaceInfo_ = await listInterfaceInfoByPageUsingPost({
@@ -364,37 +360,6 @@ const TableList: React.FC = () => {
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项 &nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)} 万
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
       <CreateModal
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -432,30 +397,6 @@ const TableList: React.FC = () => {
         updateModalOpen={updateModalOpen}
         values={currentRow || {}}
       />
-
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
-        )}
-      </Drawer>
     </PageContainer>
   );
 };
