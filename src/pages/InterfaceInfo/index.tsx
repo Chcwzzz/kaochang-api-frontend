@@ -22,7 +22,7 @@ import {
 import ProCard from '@ant-design/pro-card';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { Column } from 'rc-table';
-//import './index.less';
+import './index.less';
 
 export const valueLength = (val: any) => {
   return val && val.trim().length > 0;
@@ -164,7 +164,7 @@ const InterfaceInfo: React.FC = () => {
             <Paragraph copyable>{data?.url}</Paragraph>
           </Descriptions.Item>
           <Descriptions.Item key={'returnFormat'} label="返回格式">
-            {data?.returnFormat ?? 'JSON'}
+            {'JSON'}
           </Descriptions.Item>
           <Descriptions.Item key={'reduceScore'} label="消费积分">
             {1}个

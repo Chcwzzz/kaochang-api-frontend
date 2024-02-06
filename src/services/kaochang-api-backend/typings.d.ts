@@ -89,8 +89,11 @@ declare namespace API {
     interfaceName?: string;
     isDelete?: number;
     method?: string;
+    requestExample?: string;
     requestHeader?: string;
+    requestParams?: string;
     responseHeader?: string;
+    responseParams?: string;
     status?: number;
     totalInvokes?: number;
     updateTime?: string;
@@ -102,8 +105,11 @@ declare namespace API {
     description?: string;
     interfaceName?: string;
     method?: string;
+    requestExample?: string;
     requestHeader?: string;
+    requestParams?: string;
     responseHeader?: string;
+    responseParams?: string;
     url?: string;
   };
 
@@ -129,8 +135,11 @@ declare namespace API {
     id?: number;
     interfaceName?: string;
     method?: string;
+    requestExample?: string;
     requestHeader?: string;
+    requestParams?: string;
     responseHeader?: string;
+    responseParams?: string;
     status?: number;
     url?: string;
   };
@@ -193,11 +202,11 @@ declare namespace API {
   };
 
   type User = {
-    accesskey?: string;
+    accessKey?: string;
     createTime?: string;
     id?: number;
     isDelete?: number;
-    secretkey?: string;
+    secretKey?: string;
     updateTime?: string;
     userAccount?: string;
     userAvatar?: string;

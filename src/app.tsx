@@ -35,6 +35,14 @@ export async function getInitialState(): Promise<InitialState> {
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
+    layout: 'top',
+    contentWidth: 'Fluid',
+    fixedHeader: true,
+    fixSiderbar: true,
+    colorWeak: false,
+    splitMenus: false,
+    title: '烤肠API接口分享平台',
+    pwa: false,
     logo: '/favicon.ico',
     actionsRender: () => [<Question key="doc" />],
     avatarProps: {

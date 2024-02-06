@@ -1,16 +1,21 @@
-import { ProColumns, ProFormInstance, ProTable } from '@ant-design/pro-components';
+import { BetaSchemaForm, ProFormInstance } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Modal } from 'antd';
+import { Button } from 'antd';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 import React, { useEffect, useRef } from 'react';
 export type Props = {
-  columns: ProColumns<API.InterfaceInfo>[];
+  width: string;
+  title: string;
+  columns: any[];
   onCancel: () => void;
   onSubmit: (values: API.InterfaceInfoAddRequest) => Promise<void>;
   createModalOpen: boolean;
+  size?: SizeType;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CreateModal: React.FC<Props> = (props) => {
-  const { columns, createModalOpen } = props;
+  const { width, title, columns, createModalOpen, size, onOpenChange } = props;
   const formRef = useRef<ProFormInstance>();
   useEffect(() => {
     if (formRef.current) {
@@ -18,22 +23,58 @@ const CreateModal: React.FC<Props> = (props) => {
     }
   });
   return (
-    <Modal
+    <BetaSchemaForm<API.InterfaceInfo>
+      width={width}
+      title={title}
+      size={size}
       open={createModalOpen}
-      onCancel={() => {
-        props.onCancel();
+      formRef={formRef}
+      autoFocusFirstInput
+      layoutType={'ModalForm'}
+      onOpenChange={onOpenChange}
+      onFinish={async (value) => {
+        props.onSubmit(value);
       }}
-      footer={null}
-    >
-      <ProTable
-        formRef={formRef}
-        type="form"
-        columns={columns}
-        onSubmit={async (value) => {
-          props.onSubmit(value);
-        }}
-      />
-    </Modal>
+      grid={true}
+      rowProps={{
+        gutter: [16, 16],
+      }}
+      colProps={{
+        span: 12,
+      }}
+      submitter={{
+        render: (props, defaultDoms) => {
+          return [
+            ...defaultDoms,
+            <Button
+              key="extra-reset"
+              onClick={() => {
+                formRef.current?.resetFields();
+              }}
+            >
+              重置
+            </Button>,
+          ];
+        },
+      }}
+      columns={columns}
+    />
+    // <Modal
+    //   open={createModalOpen}
+    //   onCancel={() => {
+    //     props.onCancel();
+    //   }}
+    //   footer={null}
+    // >
+    //   <ProTable
+    //     formRef={formRef}
+    //     type="form"
+    //     columns={columns}
+    //     onSubmit={async (value) => {
+    //       props.onSubmit(value);
+    //     }}
+    //   />
+    //</Modal>
   );
 };
 export default CreateModal;

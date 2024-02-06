@@ -10,12 +10,7 @@ const Settings: ProLayoutProps & {
   navTheme: 'light',
   // 拂晓蓝
   colorPrimary: '#1890ff',
-  layout: 'mix',
-  contentWidth: 'Fixed',
-  fixedHeader: true,
-  fixSiderbar: true,
   colorWeak: false,
-  splitMenus: false,
   title: '烤肠API接口分享平台',
   pwa: false,
   token: {
@@ -23,5 +18,4 @@ const Settings: ProLayoutProps & {
     //https://procomponents.ant.design/components/layout#%E9%80%9A%E8%BF%87-token-%E4%BF%AE%E6%94%B9%E6%A0%B7%E5%BC%8F
   },
 };
-
 export default Settings;

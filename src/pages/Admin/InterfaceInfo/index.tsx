@@ -10,8 +10,10 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, Popconfirm, message } from 'antd';
+import { Link } from '@umijs/max';
+import { Button, Popconfirm, Tag, message } from 'antd';
 import React, { useRef, useState } from 'react';
+import { InterfaceInfoModalFormColumns } from '../Columns/InterfaceInfoColumns';
 import CreateModal from './components/CreateModal';
 import UpdateForm from './components/UpdateForm';
 
@@ -127,6 +129,7 @@ const handleRemove = async (record: API.DeleteRequest) => {
   }
 };
 const TableList: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -149,13 +152,15 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.InterfaceInfo>[] = [
     {
-      title: 'id',
       dataIndex: 'id',
       valueType: 'index',
+      hideInTable: true,
+      key: 'id',
     },
     {
       title: '接口名称',
       dataIndex: 'interfaceName',
+      copyable: true,
       valueType: 'text',
       formItemProps: {
         rules: [
@@ -164,16 +169,21 @@ const TableList: React.FC = () => {
           },
         ],
       },
-    },
-    {
-      title: '描述',
-      dataIndex: 'description',
-      valueType: 'textarea',
+      render: (_, record) => (
+        <Link key={record.id} to={`/interface_info/${record.id}`}>
+          {record.interfaceName}
+        </Link>
+      ),
+      ellipsis: true,
+      key: 'name',
     },
     {
       title: '接口地址',
       dataIndex: 'url',
       valueType: 'text',
+      ellipsis: true,
+      copyable: true,
+      key: 'url',
       formItemProps: {
         rules: [
           {
@@ -185,28 +195,72 @@ const TableList: React.FC = () => {
     {
       title: '请求类型',
       dataIndex: 'method',
+      filters: true,
+      width: 100,
+      onFilter: true,
       valueType: 'text',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-          },
-        ],
+      key: 'method',
+      render: (_, record) => <Tag color={'success'}>{record.method}</Tag>,
+      valueEnum: {
+        GET: {
+          text: 'GET',
+        },
+        POST: {
+          text: 'POST',
+        },
+        PUT: {
+          text: 'PUT',
+        },
+        DELETE: {
+          text: 'DELETE',
+        },
       },
     },
     {
       title: '请求头',
       dataIndex: 'requestHeader',
       valueType: 'textarea',
+      key: 'requestHeader',
     },
     {
-      title: '响应头',
-      dataIndex: 'responseHeader',
+      title: '请求参数',
+      dataIndex: 'requestParams',
+      valueType: 'text',
+      search: false,
+      width: 120,
+      ellipsis: true,
+      copyable: true,
+      key: 'requestParams',
+    },
+    {
+      title: '总调用次数',
+      dataIndex: 'totalInvokes',
+      valueType: 'text',
+      search: false,
+      key: 'totalInvokes',
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
       valueType: 'textarea',
+      copyable: true,
+      ellipsis: true,
+      key: 'description',
+    },
+    {
+      title: '请求示例',
+      dataIndex: 'requestExample',
+      key: 'requestExample',
+      valueType: 'text',
+      width: 120,
+      search: false,
+      copyable: true,
+      ellipsis: true,
     },
     {
       title: '接口状态',
       dataIndex: 'status',
+      key: 'status',
       valueEnum: {
         0: {
           text: '关闭',
@@ -227,22 +281,12 @@ const TableList: React.FC = () => {
       hideInForm: true,
     },
     {
-      title: '创建人',
-      dataIndex: 'userId',
-      valueType: 'text',
-      hideInForm: true,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
-      hideInForm: true,
-    },
-    {
       title: '更新时间',
       dataIndex: 'updateTime',
       valueType: 'dateTime',
       hideInForm: true,
+      search: false,
+      key: 'updateTime',
     },
     {
       title: '操作',
@@ -250,19 +294,17 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
+          key="update"
           onClick={() => {
             handleUpdateModalOpen(true);
             setCurrentRow(record);
           }}
         >
-          <Button type="primary" ghost>
-            修改
-          </Button>
+          修改
         </a>,
         record.status === 0 ? (
           <a
-            key="config"
+            key="online"
             onClick={async () => {
               const success = await handleOnline(record);
               if (success) {
@@ -272,13 +314,12 @@ const TableList: React.FC = () => {
               }
             }}
           >
-            <Button type="primary" ghost>
-              发布
-            </Button>
+            发布
           </a>
         ) : (
           <a
-            key="config"
+            key="offline"
+            style={{ color: 'red' }}
             onClick={async () => {
               const success = await handleOffline(record);
               if (success) {
@@ -288,14 +329,15 @@ const TableList: React.FC = () => {
               }
             }}
           >
-            <Button type="primary" ghost>
-              下线
-            </Button>
+            下线
           </a>
         ),
         <Popconfirm
+          key={'Delete'}
           title="删除"
           description="确定要删除吗？"
+          okText="Yes"
+          cancelText="No"
           onConfirm={async () => {
             const success = await handleRemove(record);
             if (success) {
@@ -305,7 +347,15 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <Button danger>删除</Button>
+          <a
+            key="Remove"
+            style={{ color: 'red' }}
+            onClick={async () => {
+              setCurrentRow(record);
+            }}
+          >
+            删除
+          </a>
         </Popconfirm>,
       ],
     },
@@ -313,7 +363,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.RuleListItem, API.PageParams>
-        headerTitle={'查询接口'}
+        headerTitle={'接口管理'}
         actionRef={actionRef}
         rowKey="key"
         search={{
@@ -330,16 +380,13 @@ const TableList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={async (
-          params,
-          // sort: Record<string, SortOrder>,
-          sort: Record<string, any>,
-          filter: Record<string, (string | number)[] | null>,
-        ) => {
+        request={async (params) => {
+          setLoading(true);
           const res: API.BaseResponsePageInterfaceInfo_ = await listInterfaceInfoByPageUsingPost({
             ...params,
           });
           if (res?.code === 0 && res?.data) {
+            setLoading(false);
             return {
               data: res?.data.records || [],
               success: true,
@@ -354,13 +401,9 @@ const TableList: React.FC = () => {
           }
         }}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
       />
       <CreateModal
+        title={'添加接口'}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
@@ -373,8 +416,10 @@ const TableList: React.FC = () => {
         onCancel={() => {
           handleCreateModalOpen(false);
         }}
-        columns={columns}
+        columns={InterfaceInfoModalFormColumns}
         createModalOpen={createModalOpen}
+        onOpenChange={handleCreateModalOpen}
+        width={'840px'}
       />
       <UpdateForm
         onSubmit={async (value) => {
