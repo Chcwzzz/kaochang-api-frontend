@@ -5,15 +5,13 @@ const ParamsTable: React.FC<{
   defaultNewColumn: any;
   column: ProColumns[];
   value?: string;
-  onChange?: (
-    value: {
-      id: React.Key;
-      fieldName?: string;
-      type?: string;
-      desc?: string;
-      required?: string;
-    }[],
-  ) => void;
+  onChange?: (value: {
+    id: React.Key;
+    fieldName?: string;
+    type?: string;
+    desc?: string;
+    required?: string;
+  }) => void;
 }> = ({ value, onChange, defaultNewColumn, column }) => {
   const [dataSource, setDataSource] = useState<readonly API.InterfaceInfoAddRequest[]>([]);
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() => {
@@ -22,6 +20,7 @@ const ParamsTable: React.FC<{
   const doData = (value: any) => {
     const valueArray = [...value];
     setDataSource(valueArray);
+    console.log(valueArray);
     let requestIds = valueArray?.map((item) => item.id as unknown as string) || [];
     setEditableRowKeys(requestIds);
   };
@@ -46,18 +45,9 @@ const ParamsTable: React.FC<{
       valueType: 'option',
       render: (text, record, _, action) => [
         <a
-          key="editable"
-          onClick={() => {
-            // @ts-ignore
-            action?.startEditable?.(record.paramName);
-          }}
-        >
-          编辑
-        </a>,
-        <a
           key="delete"
           onClick={() => {
-            setDataSource(dataSource.filter((item) => item.interfaceName !== record.interfaceName));
+            setDataSource(dataSource.filter((item) => item.id !== record.id));
           }}
         >
           删除
@@ -89,7 +79,7 @@ const ParamsTable: React.FC<{
         type: 'multiple',
         editableKeys,
         actionRender: (row, config, dom) => {
-          return [dom.save || dom.delete, dom.cancel, dom.delete];
+          return [dom.delete];
         },
         onValuesChange: (record, recordList) => {
           handleInputChange(recordList);

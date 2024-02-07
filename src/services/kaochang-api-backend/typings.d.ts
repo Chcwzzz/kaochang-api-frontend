@@ -23,9 +23,9 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponsePageInterfaceInfo_ = {
+  type BaseResponsePageInterfaceInfoVO_ = {
     code?: number;
-    data?: PageInterfaceInfo_;
+    data?: PageInterfaceInfoVO_;
     message?: string;
   };
 
@@ -107,9 +107,9 @@ declare namespace API {
     method?: string;
     requestExample?: string;
     requestHeader?: string;
-    requestParams?: string;
+    requestParams?: RequestParams[];
     responseHeader?: string;
-    responseParams?: string;
+    responseParams?: ResponseParams[];
     url?: string;
   };
 
@@ -137,11 +137,30 @@ declare namespace API {
     method?: string;
     requestExample?: string;
     requestHeader?: string;
-    requestParams?: string;
+    requestParams?: RequestParams[];
     responseHeader?: string;
-    responseParams?: string;
+    responseParams?: ResponseParams[];
     status?: number;
     url?: string;
+  };
+
+  type InterfaceInfoVO = {
+    createTime?: string;
+    description?: string;
+    id?: number;
+    interfaceName?: string;
+    isDelete?: number;
+    method?: string;
+    requestExample?: string;
+    requestHeader?: string;
+    requestParams?: RequestParams[];
+    responseHeader?: string;
+    responseParams?: ResponseParams[];
+    status?: number;
+    totalInvokes?: number;
+    updateTime?: string;
+    url?: string;
+    userId?: number;
   };
 
   type LoginUserVO = {
@@ -158,14 +177,14 @@ declare namespace API {
     column?: string;
   };
 
-  type PageInterfaceInfo_ = {
+  type PageInterfaceInfoVO_ = {
     countId?: string;
     current?: number;
     maxLimit?: number;
     optimizeCountSql?: boolean;
     orders?: OrderItem[];
     pages?: number;
-    records?: InterfaceInfo[];
+    records?: InterfaceInfoVO[];
     searchCount?: boolean;
     size?: number;
     total?: number;
@@ -195,6 +214,21 @@ declare namespace API {
     searchCount?: boolean;
     size?: number;
     total?: number;
+  };
+
+  type RequestParams = {
+    description?: string;
+    id?: string;
+    paramName?: string;
+    required?: string;
+    type?: string;
+  };
+
+  type ResponseParams = {
+    description?: string;
+    id?: string;
+    paramName?: string;
+    type?: string;
   };
 
   type uploadFileUsingPOSTParams = {

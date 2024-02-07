@@ -1,3 +1,4 @@
+import { InterfaceRequestMethodEnum } from '@/enum/commonEnum';
 import {
   addInterfaceInfoUsingPost,
   deleteInterfaceInfoUsingPost,
@@ -15,7 +16,7 @@ import { Button, Popconfirm, Tag, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { InterfaceInfoModalFormColumns } from '../Columns/InterfaceInfoColumns';
 import CreateModal from './components/CreateModal';
-import UpdateForm from './components/UpdateForm';
+import UpdateModal from './components/UpdateModal';
 
 /**
  * @en-US Add node
@@ -142,7 +143,7 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
+  const [currentRow, setCurrentRow] = useState<API.InterfaceInfoVO>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
 
   /**
@@ -150,7 +151,7 @@ const TableList: React.FC = () => {
    * @zh-CN 国际化配置
    * */
 
-  const columns: ProColumns<API.InterfaceInfo>[] = [
+  const columns: ProColumns<API.InterfaceInfoVO>[] = [
     {
       dataIndex: 'id',
       valueType: 'index',
@@ -175,7 +176,7 @@ const TableList: React.FC = () => {
         </Link>
       ),
       ellipsis: true,
-      key: 'name',
+      key: 'interfaceName',
     },
     {
       title: '接口地址',
@@ -200,7 +201,9 @@ const TableList: React.FC = () => {
       onFilter: true,
       valueType: 'text',
       key: 'method',
-      render: (_, record) => <Tag color={'success'}>{record.method}</Tag>,
+      render: (_, record) => (
+        <Tag color={InterfaceRequestMethodEnum[record?.method ?? 'default']}>{record.method}</Tag>
+      ),
       valueEnum: {
         GET: {
           text: 'GET',
@@ -223,21 +226,12 @@ const TableList: React.FC = () => {
       key: 'requestHeader',
     },
     {
-      title: '请求参数',
-      dataIndex: 'requestParams',
-      valueType: 'text',
-      search: false,
-      width: 120,
-      ellipsis: true,
-      copyable: true,
-      key: 'requestParams',
-    },
-    {
       title: '总调用次数',
       dataIndex: 'totalInvokes',
       valueType: 'text',
       search: false,
       key: 'totalInvokes',
+      hideInForm: true,
     },
     {
       title: '描述',
@@ -382,7 +376,7 @@ const TableList: React.FC = () => {
         ]}
         request={async (params) => {
           setLoading(true);
-          const res: API.BaseResponsePageInterfaceInfo_ = await listInterfaceInfoByPageUsingPost({
+          const res: API.BaseResponsePageInterfaceInfoVO_ = await listInterfaceInfoByPageUsingPost({
             ...params,
           });
           if (res?.code === 0 && res?.data) {
@@ -421,7 +415,8 @@ const TableList: React.FC = () => {
         onOpenChange={handleCreateModalOpen}
         width={'840px'}
       />
-      <UpdateForm
+      <UpdateModal
+        title={'编辑接口'}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
@@ -438,9 +433,11 @@ const TableList: React.FC = () => {
             setCurrentRow(undefined);
           }
         }}
-        columns={columns}
+        columns={InterfaceInfoModalFormColumns}
         updateModalOpen={updateModalOpen}
+        onOpenChange={handleUpdateModalOpen}
         values={currentRow || {}}
+        width={'840px'}
       />
     </PageContainer>
   );

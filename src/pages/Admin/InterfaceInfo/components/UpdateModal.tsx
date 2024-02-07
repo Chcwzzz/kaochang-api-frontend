@@ -8,31 +8,33 @@ export type Props = {
   title: string;
   columns: any[];
   onCancel: () => void;
-  onSubmit: (values: API.InterfaceInfoAddRequest) => Promise<void>;
-  createModalOpen: boolean;
+  onSubmit: (values: API.InterfaceInfoUpdateRequest) => Promise<void>;
+  updateModalOpen: boolean;
   size?: SizeType;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  values: API.InterfaceInfo;
 };
 
-const CreateModal: React.FC<Props> = (props) => {
-  const { width, title, columns, createModalOpen, size, onOpenChange } = props;
+const UpdateModal: React.FC<Props> = (props) => {
+  const { width, title, columns, updateModalOpen, size, onOpenChange, values } = props;
   const formRef = useRef<ProFormInstance>();
   useEffect(() => {
     if (formRef.current) {
-      formRef.current.resetFields();
+      formRef?.current?.setFieldsValue(values);
     }
   });
   return (
-    <BetaSchemaForm<API.InterfaceInfo>
+    <BetaSchemaForm<API.InterfaceInfoUpdateRequest>
       width={width}
       title={title}
       size={size}
-      open={createModalOpen}
+      open={updateModalOpen}
       formRef={formRef}
       autoFocusFirstInput
       layoutType={'ModalForm'}
       onOpenChange={onOpenChange}
       onFinish={async (value) => {
+        value.id = values.id;
         props.onSubmit(value);
       }}
       grid={true}
@@ -61,4 +63,4 @@ const CreateModal: React.FC<Props> = (props) => {
     />
   );
 };
-export default CreateModal;
+export default UpdateModal;

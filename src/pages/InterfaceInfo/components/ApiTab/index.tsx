@@ -16,6 +16,7 @@ export type Props = {
 };
 const ApiTab: React.FC<Props> = (props) => {
   const { requestParams, errorCodeTab, sampleCode, responseParams, returnCode } = props;
+  console.log(requestParams);
   return (
     <>
       <p className="highlightLine" style={{ marginTop: 15 }}>
