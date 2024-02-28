@@ -13,14 +13,13 @@ const ParamsTable: React.FC<{
     required?: string;
   }) => void;
 }> = ({ value, onChange, defaultNewColumn, column }) => {
-  const [dataSource, setDataSource] = useState<readonly API.InterfaceInfoAddRequest[]>([]);
+  const [dataSource, setDataSource] = useState<readonly API.InterfaceInfo[]>([]);
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() => {
-    return dataSource.map((item) => item.interfaceName as React.Key);
+    return dataSource.map((item) => item.id as React.Key);
   });
   const doData = (value: any) => {
     const valueArray = [...value];
     setDataSource(valueArray);
-    console.log(valueArray);
     let requestIds = valueArray?.map((item) => item.id as unknown as string) || [];
     setEditableRowKeys(requestIds);
   };
