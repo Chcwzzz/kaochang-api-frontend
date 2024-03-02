@@ -9,8 +9,8 @@ import {
   javaExample,
   returnExample,
 } from '@/pages/InterfaceInfo/components/CodeTemplate';
-import { getInterfaceInfoByIdUsingGet } from '@/services/kaochang-api-backend/interfaceInfoController';
-import { Link, useModel, useParams } from '@@/exports';
+import { getInterfaceInfoByIdUsingGet, interfaceInvokeUsingPost } from '@/services/kaochang-api-backend/interfaceInfoController';
+import { Link, useModel, useParams,history } from '@@/exports';
 import {
   BugOutlined,
   CodeOutlined,
@@ -23,6 +23,9 @@ import ProCard from '@ant-design/pro-card';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { Column } from 'rc-table';
 import './index.less';
+import { convertResponseParams } from '@/pages/InterfaceInfo/components/CodeTemplate';
+import ToolsTab from './components/ToolsTab';
+import { stringify } from 'querystring';
 
 export const valueLength = (val: any) => {
   return val && val.trim().length > 0;
@@ -70,11 +73,11 @@ const InterfaceInfo: React.FC = () => {
           setRequestParams([]);
           setResponseParams([]);
         }
-        //const response = res.data.responseParams ? JSON.parse(res.data.responseParams) : [] as API.RequestParamsField;
-        //const convertedParams = convertResponseParams(response);
+        const response = res.data.responseParams ? JSON.parse(res.data.responseParams) : [] as API.ResponseParams;
+        const convertedParams = convertResponseParams(response);
         setAxiosCode(axiosExample(res.data?.url, res.data?.method?.toLowerCase()));
         setJavaCode(javaExample(res.data?.url, res.data?.method?.toUpperCase()));
-        //setReturnCode(convertedParams)
+        setReturnCode(convertedParams)
       }
       setLoading(false);
     } catch (e: any) {
@@ -91,6 +94,35 @@ const InterfaceInfo: React.FC = () => {
 
   const responseExampleTabChange = (key: string) => {
     setActiveTabKey(key);
+  };
+
+  const onSearch = async (values: any) => {
+    // 未登录跳转到登录页面
+    if (!loginUser) {
+      history.replace({
+        pathname: '/user/login',
+        search: stringify({
+          redirect: pathname + search,
+        }),
+      });
+    }
+    setResultLoading(true)
+    try{
+      const res = await interfaceInvokeUsingPost({
+        id: data?.id,
+        url: data?.url,
+        ...values
+      })
+      if (res.code === 0) {
+        setTotalInvokes(Number(totalInvokes) + 1)
+      }
+      setResult(JSON.stringify(res, null, 4))
+    } catch (error: any) {
+      message.error('操作失败：' + error.message);
+      return false;
+    }
+    
+    setResultLoading(false)
   };
 
   const responseExampleTabList = [
@@ -142,6 +174,19 @@ const InterfaceInfo: React.FC = () => {
         returnCode={returnCode}
       />
     ),
+    tools:
+    <ToolsTab
+      form={form}
+      data={data}
+      temporaryParams={temporaryParams}
+      onSearch={onSearch}
+      requestExampleActiveTabKey={requestExampleActiveTabKey}
+      paramsTableChange={(e: any) => {
+        (setTemporaryParams(e))
+      }}
+      result={result}
+      resultLoading={resultLoading}
+    />,
     errorCode: (
       <>
         <p className="highlightLine">错误码：</p>

@@ -1,3 +1,6 @@
+import React from "react";
+import {ProColumns} from "@ant-design/pro-components";
+
 /**
  * axios代码示例
  * @param url
@@ -32,35 +35,105 @@ export const javaExample = (url?: string, method?: string) =>
 /**
  * 返回示例
  */
-export const returnExample =
-  '{\n' + '    "code": 0,\n' + '    "data": {} ,\n' + '    "message": "ok"\n' + '}';
+export const returnExample = '{\n' +
+  '    "code": 0,\n' +
+  '    "data": {} ,\n' +
+  '    "message": "ok"\n' +
+  '}'
 
-export const responseParameters = [
-  {
-    paramName: 'code',
-    type: 'int',
-    description: <>返回码</>,
-    required: '是',
-  },
-  {
-    paramName: 'massage',
-    type: 'string',
-    description: '返回码描述',
-    required: '是',
-  },
-  {
-    paramName: 'data',
-    type: 'Object',
-    description: '返回数据',
-    required: '是',
-  },
-];
+export const responseParameters = [{
+  fieldName: 'code',
+  type: "int",
+  desc: <>返回码</>,
+  required: '是'
+}, {
+  fieldName: 'massage',
+  type: "string",
+  desc: "返回码描述",
+  required: '是'
+}, {
+  fieldName: 'data',
+  type: "Object",
+  desc: "返回数据",
+  required: '是'
+}]
 
-export const requestParameters = [
+export const requestParameters = [{
+  fieldName: '无',
+  type: "string",
+  desc: "无",
+  required: '否'
+}]
+
+export const requestParam: ProColumns[] = [
   {
-    paramName: '无',
-    type: 'string',
-    description: '无',
-    required: '否',
-  },
-];
+    title: '参数名称',
+    dataIndex: 'paramName',
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项是必填项',
+        },
+      ],
+    },
+  }, {
+    title: '参数值',
+    dataIndex: 'value',
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项是必填项',
+        },
+      ],
+    },
+  },]
+
+
+export const DEFAULT_ADD_FIELD = {
+  "paramName": "",
+  "value": ''
+};
+
+export const convertResponseParams = (params?: [API.ResponseParams]) => {
+  if (!params || params.length <= 0) {
+    return returnExample
+  }
+  const result = {};
+  const codeObj = {};
+  const messageObj = {};
+  params.forEach((param) => {
+    // @ts-ignore
+    const keys = param.paramName.split('.');
+    // @ts-ignore
+    let currentObj;
+    if (keys[0] === 'code') {
+      currentObj = codeObj;
+    } else if (keys[0] === 'message') {
+      currentObj = messageObj;
+    } else {
+      currentObj = result;
+    }
+
+    keys.forEach((key, index) => {
+      if (index === keys.length - 1) {
+        if (param.type === 'int' && key === 'code') {
+          // @ts-ignore
+          currentObj[key] = 0;
+        } else {
+          // @ts-ignore
+          currentObj[key] = param.description || '';
+        }
+      } else {
+        // @ts-ignore
+        currentObj[key] = currentObj[key] || {};
+        // @ts-ignore
+        currentObj = currentObj[key];
+      }
+    });
+  });
+  // @ts-ignore
+  const mergedResult = {code: codeObj.code, ...result, message: messageObj.message};
+  return JSON.stringify(mergedResult, null, 2);
+};

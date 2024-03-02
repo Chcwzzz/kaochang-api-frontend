@@ -23,6 +23,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseObject_ = {
+    code?: number;
+    data?: Record<string, any>;
+    message?: string;
+  };
+
   type BaseResponsePageInterfaceInfoVO_ = {
     code?: number;
     data?: PageInterfaceInfoVO_;
@@ -161,6 +167,12 @@ declare namespace API {
     updateTime?: string;
     url?: string;
     userId?: number;
+  };
+
+  type InterfaceInvokeRequest = {
+    id?: number;
+    requestParams?: string[];
+    url?: string;
   };
 
   type LoginUserVO = {

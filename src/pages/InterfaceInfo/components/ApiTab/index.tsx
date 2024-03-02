@@ -1,3 +1,4 @@
+import CodeHighlighting from '@/components/CodeHighlighting';
 import {
   requestParameters,
   responseParameters,
@@ -53,6 +54,7 @@ const ApiTab: React.FC<Props> = (props) => {
       <p className="highlightLine" style={{ marginTop: 15 }}>
         返回示例：
       </p>
+      <CodeHighlighting codeString={returnCode} language={'javascript'}/>
     </>
   );
 };
