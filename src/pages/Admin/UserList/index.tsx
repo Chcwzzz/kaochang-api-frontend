@@ -218,7 +218,6 @@ const UserList: React.FC = () => {
   ];
   return (
     <Card>
-
       <ProTable<API.UserVO>
         headerTitle={'用户管理'}
         actionRef={actionRef}

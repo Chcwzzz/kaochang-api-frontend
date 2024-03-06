@@ -46,23 +46,27 @@ const Login: React.FC = () => {
       }
     } else {
       // 登录
-      const res = await userLoginUsingPost({
-        ...values,
-      });
-      if (res.data) {
-        const defaultLoginSuccessMessage = '登录成功！';
-        message.success(defaultLoginSuccessMessage);
-        // 登录成功后处理
-        const urlParams = new URL(window.location.href).searchParams;
-        // 重定向到 redirect 参数所在的位置
-        location.href = urlParams.get('redirect') || '/';
-        // 保存登录状态
-        setInitialState({
-          loginUser: res.data,
+      try {
+        const res = await userLoginUsingPost({
+          ...values,
         });
-        return;
-      } else {
-        message.error(res.message);
+        if (res.data) {
+          const defaultLoginSuccessMessage = '登录成功！';
+          message.success(defaultLoginSuccessMessage);
+          // 登录成功后处理
+          const urlParams = new URL(window.location.href).searchParams;
+          // 重定向到 redirect 参数所在的位置
+          location.href = urlParams.get('redirect') || '/';
+          // 保存登录状态
+          setInitialState({
+            loginUser: res.data,
+          });
+          return;
+        } else {
+          message.error(res.message);
+        }
+      } catch (e: any) {
+        message.error(e.message);
       }
     }
   };

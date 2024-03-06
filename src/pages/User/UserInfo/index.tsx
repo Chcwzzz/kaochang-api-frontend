@@ -32,15 +32,13 @@ const UserInfo: React.FC = () => {
   const {loginUser} = initialState || {}
   const [previewOpen, setPreviewOpen] = useState(false);
   const [voucherLoading, setVoucherLoading] = useState<boolean>(false);
-  const [dailyCheckInLoading, setDailyCheckInLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const handleCancel = () => setPreviewOpen(false);
   const [userName, setUserName] = useState<string | undefined>('');
   const [open, setOpen] = useState(false);
-  const [openEmailModal, setOpenEmailModal] = useState(false);
+
 
   const ref1 = useRef(null);
   const ref3 = useRef(null);
@@ -118,7 +116,6 @@ const UserInfo: React.FC = () => {
     }
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
-    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('-') + 1));
   };
 
   const uploadButton = () => {
@@ -142,10 +139,6 @@ const UserInfo: React.FC = () => {
     if (!isLt2M && !fileType) {
       const updatedFileList = [...fileList];
       updatedFileList[0] = {
-        // @ts-ignore
-        uid: loginUser?.userAccount,
-        // @ts-ignore
-        name:  "error",
         status: "error",
         percent: 100
       }
@@ -186,7 +179,7 @@ const UserInfo: React.FC = () => {
   const props: UploadProps = {
     name: 'file',
     withCredentials: true,
-    action: `${requestConfig.baseURL}api/file/upload?biz=user_avatar`,
+    action: `${requestConfig.baseURL}/admin/file/upload?biz=user_avatar`,
     onChange: async function ({file, fileList: newFileList}) {
       const {response} = file;
       if (file.response && response.data) {
@@ -196,10 +189,6 @@ const UserInfo: React.FC = () => {
           message.error(response.message);
           file.status = "error"
           updatedFileList[0] = {
-            // @ts-ignore
-            uid: loginUser?.userAccount,
-            // @ts-ignore
-            name: loginUser?.userAvatar ? loginUser?.userAvatar?.substring(loginUser?.userAvatar!.lastIndexOf('-') + 1) : "error",
             status: "error",
             percent: 100
           }
@@ -208,11 +197,7 @@ const UserInfo: React.FC = () => {
         }
         file.status = status
         updatedFileList[0] = {
-          // @ts-ignore
-          uid: loginUser?.userAccount,
-          // @ts-ignore
-          name: loginUser?.userAvatar?.substring(loginUser?.userAvatar!.lastIndexOf('-') + 1),
-          status: status,
+          status: "done",
           url: url,
           percent: 100
         }
@@ -269,7 +254,7 @@ const UserInfo: React.FC = () => {
                 {fileList.length >= 1 ? undefined : uploadButton()}
               </Upload>
             </ImgCrop>
-            <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+            <Modal open={previewOpen} footer={null} onCancel={handleCancel}>
               <img alt="example" style={{width: '100%'}} src={previewImage}/>
             </Modal>
           </Descriptions.Item>
