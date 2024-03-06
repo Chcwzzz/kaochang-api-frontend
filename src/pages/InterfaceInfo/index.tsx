@@ -189,15 +189,6 @@ const InterfaceInfo: React.FC = () => {
         </>
       ),
     },
-    {
-      key: 'sampleCode',
-      label: (
-        <>
-          <CodeOutlined />
-          示例代码
-        </>
-      ),
-    },
   ];
 
   const responseExampleContentList: Record<string, React.ReactNode> = {

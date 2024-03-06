@@ -220,15 +220,19 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '请求头',
-      dataIndex: 'requestHeader',
-      valueType: 'textarea',
-      key: 'requestHeader',
+      title: '请求示例',
+      dataIndex: 'requestExample',
+      key: 'requestExample',
+      valueType: 'text',
+      search: false,
+      copyable: true,
+      ellipsis: true,
     },
     {
       title: '总调用次数',
       dataIndex: 'totalInvokes',
       valueType: 'text',
+      width:90,
       search: false,
       key: 'totalInvokes',
       hideInForm: true,
@@ -241,20 +245,12 @@ const TableList: React.FC = () => {
       ellipsis: true,
       key: 'description',
     },
-    {
-      title: '请求示例',
-      dataIndex: 'requestExample',
-      key: 'requestExample',
-      valueType: 'text',
-      width: 120,
-      search: false,
-      copyable: true,
-      ellipsis: true,
-    },
+    
     {
       title: '接口状态',
       dataIndex: 'status',
       key: 'status',
+      width:80,
       valueEnum: {
         0: {
           text: '关闭',
@@ -280,6 +276,7 @@ const TableList: React.FC = () => {
       valueType: 'dateTime',
       hideInForm: true,
       search: false,
+      width:150,
       key: 'updateTime',
     },
     {

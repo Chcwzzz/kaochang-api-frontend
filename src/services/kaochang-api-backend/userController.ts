@@ -14,6 +14,18 @@ export async function addUserUsingPost(body: API.UserAddRequest, options?: { [ke
   });
 }
 
+/** banUser POST /admin/user/banUser */
+export async function banUserUsingPost(body: API.IdRequest, options?: { [key: string]: any }) {
+  return request<API.BaseResponse>('/admin/user/banUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** deleteUser POST /admin/user/delete */
 export async function deleteUserUsingPost(
   body: API.DeleteRequest,
@@ -135,6 +147,18 @@ export async function userLogoutUsingPost(options?: { [key: string]: any }) {
   });
 }
 
+/** normalUser POST /admin/user/normalUser */
+export async function normalUserUsingPost(body: API.IdRequest, options?: { [key: string]: any }) {
+  return request<API.BaseResponse>('/admin/user/normalUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** userRegister POST /admin/user/register */
 export async function userRegisterUsingPost(
   body: API.UserRegisterRequest,
@@ -176,6 +200,14 @@ export async function updateMyUserUsingPost(
       'Content-Type': 'application/json',
     },
     data: body,
+    ...(options || {}),
+  });
+}
+
+/** updateUserVoucher POST /admin/user/update/voucher */
+export async function updateUserVoucherUsingPost(options?: { [key: string]: any }) {
+  return request<API.BaseResponseLoginUserVO_>('/admin/user/update/voucher', {
+    method: 'POST',
     ...(options || {}),
   });
 }

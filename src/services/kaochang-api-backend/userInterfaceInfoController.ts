@@ -7,7 +7,7 @@ export async function activateInterfaceUsingPost(
   body: API.IdRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseBoolean_>('/admin/userInterfaceInfo/activateInterface', {
+  return request<API.BaseResponse>('/admin/userInterfaceInfo/activateInterface', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,4 +1,10 @@
 declare namespace API {
+  type BaseResponse = {
+    code?: number;
+    data?: Record<string, any>;
+    message?: string;
+  };
+
   type BaseResponseBoolean_ = {
     code?: number;
     data?: boolean;
@@ -202,8 +208,10 @@ declare namespace API {
   };
 
   type LoginUserVO = {
+    accessKey?: string;
     createTime?: string;
     id?: number;
+    secretKey?: string;
     updateTime?: string;
     userAvatar?: string;
     userName?: string;
@@ -279,6 +287,7 @@ declare namespace API {
     id?: number;
     isDelete?: number;
     secretKey?: string;
+    status?: number;
     updateTime?: string;
     userAccount?: string;
     userAvatar?: string;
@@ -354,20 +363,20 @@ declare namespace API {
   type UserUpdateMyRequest = {
     userAvatar?: string;
     userName?: string;
-    userProfile?: string;
   };
 
   type UserUpdateRequest = {
     id?: number;
+    status?: number;
     userAvatar?: string;
     userName?: string;
-    userProfile?: string;
     userRole?: string;
   };
 
   type UserVO = {
     createTime?: string;
     id?: number;
+    status?: number;
     userAvatar?: string;
     userName?: string;
     userRole?: string;
