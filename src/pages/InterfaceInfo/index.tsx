@@ -6,11 +6,16 @@ import { errorCode } from '@/enum/ErrorCodeEnum';
 import ApiTab from '@/pages/InterfaceInfo/components/ApiTab';
 import {
   axiosExample,
+  convertResponseParams,
   javaExample,
   returnExample,
 } from '@/pages/InterfaceInfo/components/CodeTemplate';
-import { getInterfaceInfoByIdUsingGet, interfaceInvokeUsingPost } from '@/services/kaochang-api-backend/interfaceInfoController';
-import { Link, useModel, useParams,history } from '@@/exports';
+import {
+  getInterfaceInfoByIdUsingGet,
+  interfaceInvokeUsingPost,
+} from '@/services/kaochang-api-backend/interfaceInfoController';
+import { activateInterfaceUsingPost } from '@/services/kaochang-api-backend/userInterfaceInfoController';
+import { history, Link, useModel, useParams } from '@@/exports';
 import {
   BugOutlined,
   CodeOutlined,
@@ -21,11 +26,10 @@ import {
 } from '@ant-design/icons';
 import ProCard from '@ant-design/pro-card';
 import Paragraph from 'antd/lib/typography/Paragraph';
-import { Column } from 'rc-table';
-import './index.less';
-import { convertResponseParams } from '@/pages/InterfaceInfo/components/CodeTemplate';
-import ToolsTab from './components/ToolsTab';
 import { stringify } from 'querystring';
+import { Column } from 'rc-table';
+import ToolsTab from './components/ToolsTab';
+import './index.less';
 
 export const valueLength = (val: any) => {
   return val && val.trim().length > 0;
@@ -47,7 +51,8 @@ const InterfaceInfo: React.FC = () => {
   const params = useParams();
   const [form] = Form.useForm();
   const [axiosCode, setAxiosCode] = useState<any>();
-  const [totalInvokes, setTotalInvokes] = useState<number>(0);
+  const [usertotalinvokes, setUserTotalInvokes] = useState<number>(0);
+  const [userleftinvokes, setUserLeftInvokes] = useState<number>(0);
   const [javaCode, setJavaCode] = useState<any>();
   const [returnCode, setReturnCode] = useState<any>(returnExample);
   const { initialState } = useModel('@@initialState');
@@ -63,7 +68,8 @@ const InterfaceInfo: React.FC = () => {
       const res = await getInterfaceInfoByIdUsingGet({ id: params.id });
       if (res.data && res.code === 0) {
         setDate(res.data || {});
-        setTotalInvokes(res.data.totalInvokes || 0);
+        setUserTotalInvokes(res.data.usertotalinvokes || 0);
+        setUserLeftInvokes(res.data.userleftinvokes || 0);
         let requestParams = res.data.requestParams;
         let responseParams = res.data.responseParams;
         try {
@@ -73,11 +79,13 @@ const InterfaceInfo: React.FC = () => {
           setRequestParams([]);
           setResponseParams([]);
         }
-        const response = res.data.responseParams ? JSON.parse(res.data.responseParams) : [] as API.ResponseParams;
+        const response = res.data.responseParams
+          ? JSON.parse(res.data.responseParams)
+          : ([] as API.ResponseParams);
         const convertedParams = convertResponseParams(response);
         setAxiosCode(axiosExample(res.data?.url, res.data?.method?.toLowerCase()));
         setJavaCode(javaExample(res.data?.url, res.data?.method?.toUpperCase()));
-        setReturnCode(convertedParams)
+        setReturnCode(convertedParams);
       }
       setLoading(false);
     } catch (e: any) {
@@ -106,23 +114,51 @@ const InterfaceInfo: React.FC = () => {
         }),
       });
     }
-    setResultLoading(true)
-    try{
+    setResultLoading(true);
+    try {
       const res = await interfaceInvokeUsingPost({
         id: data?.id,
         url: data?.url,
-        ...values
-      })
+        method: data?.method,
+        ...values,
+      });
       if (res.code === 0) {
-        setTotalInvokes(Number(totalInvokes) + 1)
+        setUserTotalInvokes(Number(usertotalinvokes) + 1);
+        setUserLeftInvokes(Number(userleftinvokes) - 1);
       }
-      setResult(JSON.stringify(res, null, 4))
+      // 将"data"字段的值解析为一个JSON对象
+      if (typeof res.data === 'string') {
+        try {
+          res.data = JSON.parse(res.data);
+          console.log('Res', res.data);
+          if (res?.data?.message) {
+            res.code = res.data.code;
+            res.message = res.data.message;
+            res.data = JSON.parse(res.data.data);
+          }
+        } catch (e) {
+          console.error('Failed to parse data:', e);
+        }
+      }
+      setResult(JSON.stringify(res, null, 4));
     } catch (error: any) {
       message.error('操作失败：' + error.message);
       return false;
     }
-    
-    setResultLoading(false)
+
+    setResultLoading(false);
+  };
+
+  const activateInterface = async () => {
+    try {
+      const res = await activateInterfaceUsingPost({ id: params.id });
+      if (res.code === 0) {
+        message.success(res.data);
+        setUserLeftInvokes(200);
+      }
+    } catch (e: any) {
+      message.error(e.message);
+    }
   };
 
   const responseExampleTabList = [
@@ -174,19 +210,20 @@ const InterfaceInfo: React.FC = () => {
         returnCode={returnCode}
       />
     ),
-    tools:
-    <ToolsTab
-      form={form}
-      data={data}
-      temporaryParams={temporaryParams}
-      onSearch={onSearch}
-      requestExampleActiveTabKey={requestExampleActiveTabKey}
-      paramsTableChange={(e: any) => {
-        (setTemporaryParams(e))
-      }}
-      result={result}
-      resultLoading={resultLoading}
-    />,
+    tools: (
+      <ToolsTab
+        form={form}
+        data={data}
+        temporaryParams={temporaryParams}
+        onSearch={onSearch}
+        requestExampleActiveTabKey={requestExampleActiveTabKey}
+        paramsTableChange={(e: any) => {
+          setTemporaryParams(e);
+        }}
+        result={result}
+        resultLoading={resultLoading}
+      />
+    ),
     errorCode: (
       <>
         <p className="highlightLine">错误码：</p>
@@ -209,14 +246,17 @@ const InterfaceInfo: React.FC = () => {
           <Descriptions.Item key={'returnFormat'} label="返回格式">
             {'JSON'}
           </Descriptions.Item>
-          <Descriptions.Item key={'reduceScore'} label="消费积分">
-            {1}个
+          <Descriptions.Item>
+            <Button onClick={activateInterface}>开通接口</Button>
           </Descriptions.Item>
           <Descriptions.Item key={'request'} label="请求方式">
             <Tag color={InterfaceRequestMethodEnum[data?.method ?? 'default']}>{data?.method}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item key={'totalInvokes'} label="调用总次数">
-            {totalInvokes}次
+          <Descriptions.Item key={'usertotalinvokes'} label="调用总次数">
+            {usertotalinvokes}次
+          </Descriptions.Item>
+          <Descriptions.Item key={'usertotalinvokes'} label="剩余调用次数">
+            {userleftinvokes}次
           </Descriptions.Item>
           <Descriptions.Item key={'status'} label={'接口状态'}>
             {data && data.status === 0 ? (

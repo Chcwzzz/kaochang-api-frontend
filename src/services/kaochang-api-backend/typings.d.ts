@@ -5,9 +5,9 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponseInterfaceInfo_ = {
+  type BaseResponseListUserInterfaceInfoVO_ = {
     code?: number;
-    data?: InterfaceInfo;
+    data?: UserInterfaceInfoVO[];
     message?: string;
   };
 
@@ -59,6 +59,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseUserInterfaceInfoVO_ = {
+    code?: number;
+    data?: UserInterfaceInfoVO;
+    message?: string;
+  };
+
   type BaseResponseUserVO_ = {
     code?: number;
     data?: UserVO;
@@ -74,9 +80,28 @@ declare namespace API {
     id?: number;
   };
 
+  type getInterfaceInfoByUrlAndMethodUsingGETParams = {
+    /** method */
+    method: string;
+    /** url */
+    url: string;
+  };
+
+  type getUserByAKUsingGETParams = {
+    /** accessKey */
+    accessKey?: string;
+  };
+
   type getUserByIdUsingGETParams = {
     /** id */
     id?: number;
+  };
+
+  type getUserLeftInvokesUsingGETParams = {
+    /** interfaceId */
+    interfaceId?: number;
+    /** userId */
+    userId?: number;
   };
 
   type getUserVOByIdUsingGETParams = {
@@ -171,7 +196,8 @@ declare namespace API {
 
   type InterfaceInvokeRequest = {
     id?: number;
-    requestParams?: string[];
+    method?: string;
+    requestParams?: UserRequestParams[];
     url?: string;
   };
 
@@ -268,6 +294,36 @@ declare namespace API {
     userRole?: string;
   };
 
+  type UserInterfaceInfo = {
+    createtime?: string;
+    id?: number;
+    interfaceinfoid?: number;
+    isdelete?: number;
+    updatetime?: string;
+    userid?: number;
+    userleftinvokes?: number;
+    usertotalinvokes?: number;
+  };
+
+  type UserInterfaceInfoVO = {
+    createTime?: string;
+    description?: string;
+    id?: number;
+    interfaceName?: string;
+    method?: string;
+    requestExample?: string;
+    requestHeader?: string;
+    requestParams?: string;
+    responseHeader?: string;
+    responseParams?: string;
+    status?: number;
+    updateTime?: string;
+    url?: string;
+    userId?: number;
+    userleftinvokes?: number;
+    usertotalinvokes?: number;
+  };
+
   type UserLoginRequest = {
     userAccount?: string;
     userPassword?: string;
@@ -287,6 +343,12 @@ declare namespace API {
     checkPassword?: string;
     userAccount?: string;
     userPassword?: string;
+  };
+
+  type UserRequestParams = {
+    id?: string;
+    paramName?: string;
+    value?: Record<string, any>;
   };
 
   type UserUpdateMyRequest = {

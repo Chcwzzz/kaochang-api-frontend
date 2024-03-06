@@ -2,12 +2,12 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** addInterfaceInfo POST /api/interfaceInfo/add */
+/** addInterfaceInfo POST /admin/interfaceInfo/add */
 export async function addInterfaceInfoUsingPost(
   body: API.InterfaceInfoAddRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseLong_>('/api/interfaceInfo/add', {
+  return request<API.BaseResponseLong_>('/admin/interfaceInfo/add', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,12 +17,12 @@ export async function addInterfaceInfoUsingPost(
   });
 }
 
-/** deleteInterfaceInfo POST /api/interfaceInfo/delete */
+/** deleteInterfaceInfo POST /admin/interfaceInfo/delete */
 export async function deleteInterfaceInfoUsingPost(
   body: API.DeleteRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseBoolean_>('/api/interfaceInfo/delete', {
+  return request<API.BaseResponseBoolean_>('/admin/interfaceInfo/delete', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,13 +32,13 @@ export async function deleteInterfaceInfoUsingPost(
   });
 }
 
-/** getInterfaceInfoById GET /api/interfaceInfo/get */
+/** getInterfaceInfoById GET /admin/interfaceInfo/get */
 export async function getInterfaceInfoByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.getInterfaceInfoByIdUsingGETParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseInterfaceInfo_>('/api/interfaceInfo/get', {
+  return request<API.BaseResponseUserInterfaceInfoVO_>('/admin/interfaceInfo/get', {
     method: 'GET',
     params: {
       ...params,
@@ -47,12 +47,27 @@ export async function getInterfaceInfoByIdUsingGet(
   });
 }
 
-/** interfaceInvoke POST /api/interfaceInfo/invoke */
+/** getInterfaceInfoByUrlAndMethod GET /admin/interfaceInfo/getInterfaceInfoByUrlAndMethod */
+export async function getInterfaceInfoByUrlAndMethodUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getInterfaceInfoByUrlAndMethodUsingGETParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.InterfaceInfo>('/admin/interfaceInfo/getInterfaceInfoByUrlAndMethod', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
+/** interfaceInvoke POST /admin/interfaceInfo/invoke */
 export async function interfaceInvokeUsingPost(
   body: API.InterfaceInvokeRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseObject_>('/api/interfaceInfo/invoke', {
+  return request<API.BaseResponseObject_>('/admin/interfaceInfo/invoke', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -62,12 +77,12 @@ export async function interfaceInvokeUsingPost(
   });
 }
 
-/** listInterfaceInfoByPage POST /api/interfaceInfo/list/page */
+/** listInterfaceInfoByPage POST /admin/interfaceInfo/list/page */
 export async function listInterfaceInfoByPageUsingPost(
   body: API.InterfaceInfoQueryRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponsePageInterfaceInfoVO_>('/api/interfaceInfo/list/page', {
+  return request<API.BaseResponsePageInterfaceInfoVO_>('/admin/interfaceInfo/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -77,12 +92,12 @@ export async function listInterfaceInfoByPageUsingPost(
   });
 }
 
-/** interfaceOffline POST /api/interfaceInfo/offline */
+/** interfaceOffline POST /admin/interfaceInfo/offline */
 export async function interfaceOfflineUsingPost(
   body: API.IdRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseBoolean_>('/api/interfaceInfo/offline', {
+  return request<API.BaseResponseBoolean_>('/admin/interfaceInfo/offline', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -92,12 +107,12 @@ export async function interfaceOfflineUsingPost(
   });
 }
 
-/** interfaceOnline POST /api/interfaceInfo/online */
+/** interfaceOnline POST /admin/interfaceInfo/online */
 export async function interfaceOnlineUsingPost(
   body: API.IdRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseBoolean_>('/api/interfaceInfo/online', {
+  return request<API.BaseResponseBoolean_>('/admin/interfaceInfo/online', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -107,12 +122,12 @@ export async function interfaceOnlineUsingPost(
   });
 }
 
-/** updateInterfaceInfo POST /api/interfaceInfo/update */
+/** updateInterfaceInfo POST /admin/interfaceInfo/update */
 export async function updateInterfaceInfoUsingPost(
   body: API.InterfaceInfoUpdateRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseBoolean_>('/api/interfaceInfo/update', {
+  return request<API.BaseResponseBoolean_>('/admin/interfaceInfo/update', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
