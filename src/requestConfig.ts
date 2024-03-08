@@ -15,7 +15,7 @@ interface ResponseStructure {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const requestConfig: RequestConfig = {
-  baseURL: 'http://localhost:8101',
+  baseURL: 'https://api.kaochang.me',
   withCredentials: true,
   // 请求拦截器
   requestInterceptors: [
